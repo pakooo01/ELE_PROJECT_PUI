@@ -276,9 +276,17 @@ button {
   background-color: #ffc107;
   border: none;
 }
+.btn-export {
+  background-color: #07ff45;
+  border: none;
+}
 
 .btn-warning:hover {
   background-color: #e0a800;
+  transform: scale(1.05);
+}
+.btn-export:hover {
+  background-color: #00e000;
   transform: scale(1.05);
 }
 
@@ -510,6 +518,29 @@ button {
 @media (max-width: 768px) {
   .article-card {
     max-width: 100%;
+  }
+}
+
+.refresh-icon {
+  cursor: pointer;
+  display: inline-block;
+  margin-left: 10px; /* Add some space between the button and icon */
+  font-size: 1.5rem; /* Adjust the size of the icon */
+  color: #007bff; /* Adjust color if necessary */
+}
+
+.refresh-icon i {
+  font-size: 1.5rem;
+  animation: spin 2s linear infinite;
+}
+
+/* Adding an animation to spin the icon */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 

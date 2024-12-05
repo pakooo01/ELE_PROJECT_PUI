@@ -15,15 +15,15 @@ import { ElectronService } from '../electron.service';  // Importa il servizio E
 })
 export class ArticleCreateComponent {
   articleForm: FormGroup;
-  invalidFields: string[] = [];  // Array per tenere traccia dei campi non validi
+  invalidFields: string[] = [];  
   selectedFile: File | null = null;
-  isErrorNotified: boolean = false;  // Flag per sapere se l'errore è stato notificato
+  isErrorNotified: boolean = false;  
 
   constructor(
     private formBuilder: FormBuilder,
     private newsService: NewsService,
     private router: Router,
-    private electronService: ElectronService  // Inietta il servizio
+    private electronService: ElectronService 
   ) {
     this.articleForm = this.formBuilder.group({
       title: ['', Validators.required],
@@ -58,9 +58,8 @@ export class ArticleCreateComponent {
   }
 
   onSubmit() {
-    this.invalidFields = []; // Resetta l'array dei campi invalidi
+    this.invalidFields = [];
 
-    // Verifica la validità del form e aggiungi i campi non validi all'array
     Object.keys(this.articleForm.controls).forEach(field => {
       const control = this.articleForm.get(field);
       if (control && control.invalid) {
@@ -69,12 +68,10 @@ export class ArticleCreateComponent {
     });
 
     if (this.articleForm.invalid) {
-      // Mostra una notifica di errore
       this.electronService.sendNotification({
         title: 'ERROR',
         message: 'Error while submitting the form',
       }).then(() => {
-        // Quando l'utente clicca sulla notifica, evidenzia i campi invalidi
         this.isErrorNotified = true;
       });
       return;  // Non proseguire con l'invio del form

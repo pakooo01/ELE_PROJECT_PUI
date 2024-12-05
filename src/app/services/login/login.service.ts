@@ -29,17 +29,30 @@ export class LoginService {
     const usereq = new HttpParams()
       .set('username', name)
       .set('passwd', pwd);
-
+  
     console.log('Richiesta di login inviata con:', usereq.toString());
-
+  
     return this.http.post<User>(this.loginUrl, usereq, this.httpOptions).pipe(
       tap(user => {
         console.log('Risposta API:', user); 
         this.user = user; 
       }),
-      catchError(this.handleError<User>('login'))
+      catchError(error => {
+        // Gestisci l'errore qui
+        let errorMessage = 'An unknown error occurred.';
+        if (error.status === 401) {
+          errorMessage = 'Invalid credentials. Please try again.';
+        } else if (error.status === 0) {
+          errorMessage = 'No connection to the server.';
+        }
+        // Logga l'errore
+        console.error('Login error', error);
+        // Lancia l'errore come un observable
+        return throwError(() => new Error(errorMessage));
+      })
     );
   }
+  
 
   getUserData(): User | null {
     return this.user;

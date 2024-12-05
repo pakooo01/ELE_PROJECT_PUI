@@ -78,7 +78,7 @@ export class EditArticleComponent implements OnInit {
         this.invalidFields.push(field);
       }
     });
-    if (this.articleForm.invalid && this.article) {
+    if (this.articleForm.invalid) {
       this.electronService.sendNotification({
         title: 'ERROR',
         message: 'Error while submitting the form',
@@ -105,6 +105,6 @@ export class EditArticleComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/']);  // Naviga verso la rotta '/main'
+    this.router.navigate(['/articles']);  // Naviga verso la rotta '/main'
   }
 }

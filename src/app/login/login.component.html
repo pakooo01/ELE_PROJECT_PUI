@@ -1,0 +1,41 @@
+
+<body>
+
+  <div class="login-container">
+    <!-- Right Side: Background Image -->
+    <div class="right-side">
+      <img src="https://img.freepik.com/free-vector/login-concept-illustration_114360-739.jpg?t=st=1733052636~exp=1733056236~hmac=139f8c6ebfdb2c59d85e7f3b0a7e68210289dadcbaaad635852ecebf75da8231&w=1380" alt="Placeholder Image" class="login-image">
+      <div class="image-overlay"></div>
+    </div>
+
+    <!-- Left Side: Login Form -->
+    <div class="left-side">
+      <div class="welcome-text">Welcome Back!</div> <!-- Added Welcome Back text here -->
+      <div class="login-box">
+        <h2>Login</h2>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <div class="input-group">
+              <label for="username">Username</label>
+              <input formControlName="username" type="text" id="username" name="username" placeholder="Enter your username" />
+            </div>
+            <div class="input-group">
+              <label for="password">Password</label>
+              <input formControlName="password" type="password" id="password" name="password" placeholder="Enter your password" />
+            </div>
+          
+            <button type="submit">Login</button>
+          </form>
+          
+          <div *ngIf="errorMessage" class="error-message">
+            {{ errorMessage }}
+          </div>
+          
+          <div id="guest">
+            <button class="btn btn-primary guest-btn" (click)="accessWithoutLogin()">Access Like a Guest</button>
+          </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+

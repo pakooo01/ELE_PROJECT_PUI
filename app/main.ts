@@ -1,6 +1,9 @@
-import { app, BrowserWindow, screen, ipcMain, Notification } from 'electron';
+import { app, BrowserWindow, screen, ipcMain, Notification, dialog } from 'electron';
+import { Article } from '../src/app/interface/interface.module';
 import * as path from 'path';
 import * as fs from 'fs';
+import * as os from 'os'
+
 
 let win: BrowserWindow | null = null;
 const args = process.argv.slice(1),
@@ -20,7 +23,7 @@ function createWindow(): BrowserWindow {
       nodeIntegration: true,
       allowRunningInsecureContent: serve,
       contextIsolation: false,
-      preload: path.join(__dirname, 'preload.js'), // Usa preload.js per gestire l'IPC
+      preload: path.join(__dirname, 'preload.js'),
     },
   });
 
@@ -52,6 +55,50 @@ function createWindow(): BrowserWindow {
 
   return win;
 }
+ipcMain.handle('import-article', async (event, body: any) => {
+  const result = await dialog.showOpenDialog({
+    properties: ['openFile'],
+    filters: [{ name: 'JSON Files', extensions: ['json'] }],
+  });
+
+  if (result.canceled || result.filePaths.length === 0) {
+    return { success: false, error: 'No file selected' };
+  }
+
+  const filePath = result.filePaths[0];
+  const fileContent = fs.readFileSync(filePath, 'utf8');
+  const article = JSON.parse(fileContent); // Assuming the JSON is formatted correctly
+
+  return { success: true, article };
+});
+
+ipcMain.handle('export-article', (event, article: Article) => {
+  const { id, image_data, ...articleWithoutImage } = article; // Ottieni l'ID e rimuovi i dati dell'immagine
+
+  try {
+    const exportPath = path.join(
+      os.homedir(),
+      'Desktop',
+      `article_${Date.now()}.json`  // Usa l'ID e la data per creare un nome file unico
+    );
+
+    const articleData = JSON.stringify(articleWithoutImage, null, 2);
+
+    fs.writeFileSync(exportPath, articleData, 'utf8'); // Salva il file
+
+    dialog.showMessageBox({
+      type: 'info',
+      title: 'Article exported',
+      message: 'Article exported to: ' + exportPath,
+      buttons: ['OK'],
+    });
+
+    return { success: true, path: exportPath };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+});
+
 
 // Add notification handling
 ipcMain.handle('show-notification', (event, body: { title: string; message: string }) => {

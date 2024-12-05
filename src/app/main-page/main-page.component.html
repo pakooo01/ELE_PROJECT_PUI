@@ -36,11 +36,11 @@
       </ul>
 
       <button
-        *ngIf="isLoggedIn"
-        class="btn btn-danger logout-btn"
-        (click)="logout()"
-      >
+        *ngIf="isLoggedIn" class="btn btn-danger logout-btn" (click)="logout()">
         Logout
+      </button>
+      <button *ngIf="!isLoggedIn" class="btn btn-danger logout-btn" (click)="login()" >
+        Login
       </button>
     </div>
   </div>
@@ -48,30 +48,13 @@
 
 
 
-<div class="container mt-4">
-  <div class="login-container mb-4" *ngIf="!isLoggedIn">
-    <h2 class="text-center">Login</h2> 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="username">Username:</label>
-        <input id="username" formControlName="username" type="text" class="form-control" placeholder="Enter your username" />
-      </div>
-      <div class="form-group">
-        <label for="password">Password:</label>
-        <input id="password" formControlName="password" type="password" class="form-control" placeholder="Enter your password" />
-      </div>
-      <div class="form-group text-center">
-        <button type="submit" class="btn btn-primary">Login</button>
-      </div>
-      <div *ngIf="errorMessage" class="alert alert-danger">
-        {{ errorMessage }}
-      </div>
-    </form> 
-  </div>
-
- 
+<div class="container mt-4"> 
   <div *ngIf="isLoggedIn" class="text-center mt-4">
     <h4>Welcome, {{ loggedInUser }}!</h4>
+  </div>
+
+  <div *ngIf="isLoggedIn">
+    <button *ngIf="isLoggedIn" class="btn btn-success mb-4" (click)="importArticle()">Import Article</button>
   </div>
 
   <div>
@@ -99,6 +82,7 @@
             <button class="btn btn-primary" (click)="viewDetails(article.id)">View Details</button>
             <button *ngIf="isLoggedIn" class="btn btn-danger" (click)="deleteArticle(article.id)">Delete</button>
             <button *ngIf="isLoggedIn" class="btn btn-warning" (click)="editArticle(article)">Edit</button>
+            <button *ngIf="isLoggedIn" class="btn btn-export" (click)="exportArticle(article)">Export Article</button>
           </div>
         </div>
       </div>

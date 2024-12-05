@@ -32,6 +32,7 @@ export class MainPageComponent implements OnInit {
   isLoggedIn: boolean = false;
   loggedInUser: string = ''; 
   successMessage: string | null = null;
+  article: any = null;
 
 
   constructor(
@@ -146,7 +147,54 @@ export class MainPageComponent implements OnInit {
       });
     }
   }
+  
+  exportArticle(article: Article): void {
+    console.log("Exporting article:", article); // Verifica che l'articolo venga passato correttamente
+  
+    if (!article) {
+      console.error("No article to export.");
+      return;
+    }
+  
+    this.electronService.exportArticle(article); // Passa l'articolo al servizio
+  }
 
+  async importArticle(): Promise<void> {
+    try {
+      // Importa l'articolo
+      const importedArticle = await this.electronService.importArticle();
+  
+      // Verifica se l'articolo è stato importato correttamente
+      if (importedArticle) {
+        // Aggiungi l'articolo al server
+        this.newsService.createArticle(importedArticle).subscribe({
+          next: (response: Article) => {
+            console.log('Article created:', response);
+            // Aggiungi l'articolo alla lista
+            this.articles.push(response);
+            this.filteredArticles.push(response); // Assicurati che la lista filtrata venga aggiornata anche
+            this.router.navigate(['/articles'], { skipLocationChange: true }).then(() => {
+              this.router.navigate(['/articles']); // Cambia con il percorso corretto per il tuo componente
+            });
+            
+            // Mostra una notifica di successo
+            this.electronService.sendNotification({
+              title: 'Article Imported',
+              message: 'Article Imported Successfully',
+            });
+          },
+          error: (error) => {
+            console.error('Error creating article:', error);
+            this.errorMessage = 'Error saving the article to the server';
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error importing article:', error);
+      this.errorMessage = 'Error importing article';
+    }
+  }
+  
   goToTheForm(){
     this.router.navigate(['/article/new/form']);
   }
@@ -157,7 +205,11 @@ export class MainPageComponent implements OnInit {
 
   logout() {
     this.isLoggedIn = false; 
-    this.loginService.logout(); 
+    this.loginService.logout();
+    this.router.navigate(['/'])
   }
 
+  login(){
+    this.router.navigate(['/'])
+  }
 }
