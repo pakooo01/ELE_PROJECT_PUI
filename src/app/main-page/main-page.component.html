@@ -1,4 +1,7 @@
-<nav class="navbar navbar-expand-lg navbar-light custom-navbar">
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light custom-navbar drag">
   <div class="container-fluid">
     <span class="navbar-brand fw-bold">Menu</span>
     <button
@@ -36,7 +39,7 @@
       </ul>
 
       <button
-        *ngIf="isLoggedIn" class="btn btn-danger logout-btn" (click)="logout()">
+        *ngIf="isLoggedIn" class="btn btn-danger logout-btn no-drag" (click)="logout()">
         Logout
       </button>
       <button *ngIf="!isLoggedIn" class="btn btn-danger logout-btn" (click)="login()" >
@@ -96,3 +99,5 @@
 
   <p *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</p>
 </div>
+
+
